@@ -8,7 +8,6 @@ const T = new Twit({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET,
  });
 tweetId()
-setInterval(tweetId, 1000*20)
 // start stream and track tweets
 function tweetId(){
   var r = Math.floor(Math.random()* 100);
