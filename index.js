@@ -13,8 +13,6 @@ const T = new Twit({
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
-
-tweetId()
 setInterval(tweetId, 3600000);
 function tweetId(){
   
