@@ -15,7 +15,7 @@ const T = new Twit({
 }
 
 tweetId()
-setInterval(tweetId, 120000);
+setInterval(tweetId, 3600000);
 function tweetId(){
   
   T.get('users/show', { id: getRandomInt(12, 99999999999) },  function (err, data, response) {
