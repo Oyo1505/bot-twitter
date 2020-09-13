@@ -13,8 +13,8 @@ const T = new Twit({
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
-var usersArray = [500128681, 544902207, 243247158, 63729150, 861320851, 1008682832120696833]
-setInterval(tweetId, 3600000);
+var usersArray = [500128681, 544902207, 243247158, 861320851, 1008682832120696833]
+setInterval(tweetId, 900000);
 function tweetId(){
 T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
   var followersIds = data.ids;
