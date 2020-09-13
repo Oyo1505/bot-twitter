@@ -18,7 +18,6 @@ setInterval(tweetId, 900000);
 function tweetId(){
 T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
   var followersIds = data.ids;
-  console.log(data)
     T.get('users/show', { id: followersIds[getRandomInt(0,followersIds.length)] },  function (err, data, response) {
       if(err){
         console.log(err);
