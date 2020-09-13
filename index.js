@@ -20,7 +20,6 @@ T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  f
   var followersIds = data.ids;
     T.get('users/show', { id: followersIds[getRandomInt(0,followersIds.length)] },  function (err, data, response) {
       if(err){
-        console.log(err);
         tweetId()
       }else{
         console.log('Hey I found ' + data.screen_name)
