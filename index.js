@@ -1,4 +1,5 @@
 const Twit = require('twit');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const T = new Twit({
@@ -14,7 +15,7 @@ const T = new Twit({
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
 var usersArray = [500128681, 544902207, 243247158, 861320851, 1008682832120696833];
-setInterval(tweetId, 1800000);
+setInterval(tweetId, 3600000);
 function tweetId(){
 T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
   var followersIds = data.ids;
@@ -23,7 +24,7 @@ T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  f
         tweetId()
       }else{
         console.log('Hey I found ' + data.screen_name)
-        var tweet = {status: 'Bonjour @' + data.screen_name +' ! 🙂'}
+        var tweet = {status: 'Bonjour @' + data.screen_name +' ! 🙂 #bonjour'}
         T.post('statuses/update', tweet, tweeted);
         function tweeted(err, data, response){
         if(err){
@@ -34,20 +35,39 @@ T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  f
     })
 })
 }
-/*automated reply*/
-/*var stream = T.stream('statuses/filter', { track: '@bjr_le_monde'});
 
-stream.on('tweet', function (twit) {
-var reply = {
-  status: 'Je ne suis pas un humain voit direct avec mon créateur @Oyo1505',
-  in_reply_to_status_id:twit.str_id,
-  auto_populate_reply_metadata: true
+/*automated reply*/
+var stream = T.stream('statuses/filter', {track: "bjr_le_monde"});
+
+stream.on('tweet', tweetEvent)
+
+function tweetEvent (eventMsg) {
+  var replyTo = eventMsg.in_reply_to_screen_name; 
+  var text = eventMsg.text;
+  var id = eventMsg.id_str;
+  var from = eventMsg.user.screen_name;
+
+  if(replyTo === 'bjr_le_monde'){
+   // Get rid of the @ mention
+   text = text.replace(/@bjr_le_monde/g,'');
+
+  /*Get a joke*/
+
+  fetch('https://www.blagues-api.fr/api/random', {
+  headers: {
+    'Authorization' : `Bearer ${process.env.JOKE_TOKEN}`
+   } 
+  }).then( response => response.json())
+    .then(data=>{
+      // Start a reply back to the sender
+      var replyText = '@'+from +' '+ data.joke +' '+ data.answer +' '+ "#getajoke";
+      T.post('statuses/update', { status: replyText, in_reply_to_status_id: id}, replied);
+      function replied(err, data, response){
+      if(err){
+        console.log('ERROR' + err)
+        }
+      } 
+
+    })
   }
-T.post('statuses/update', reply, replied);
-  function replied(err, data, response){
-    console.log(data)
-  if(err){
-    console.log('ERROR' + err)
-    }
-  }    
-})*/
+}
