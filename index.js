@@ -24,7 +24,7 @@ T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  f
         tweetId()
       }else{
         console.log('Hey I found ' + data.screen_name)
-        var tweet = {status: 'Bonjour @' + data.screen_name +' ! 🙂 #bonjour'}
+        var tweet = {status: 'Bonjour @' + data.screen_name +', tu veux une blague  ? 🙂 #bonjour #getajoke '}
         T.post('statuses/update', tweet, tweeted);
         function tweeted(err, data, response){
         if(err){
@@ -59,6 +59,7 @@ function tweetEvent (eventMsg) {
    } 
   }).then( response => response.json())
     .then(data=>{
+      console.log(data)
       // Start a reply back to the sender
       var replyText = '@'+from +' '+ data.joke +' '+ data.answer +' '+ "#getajoke";
       T.post('statuses/update', { status: replyText, in_reply_to_status_id: id}, replied);
@@ -67,7 +68,8 @@ function tweetEvent (eventMsg) {
         console.log('ERROR' + err)
         }
       } 
-
     })
   }
 }
+
+/*Twitch live tweet*/
