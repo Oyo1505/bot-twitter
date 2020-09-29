@@ -15,7 +15,7 @@ const T = new Twit({
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
 var usersArray = [500128681, 544902207, 243247158, 861320851, 1008682832120696833];
-setInterval(tweetId, 3600000);
+setInterval(tweetId, 21600000);
 function tweetId(){
 T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
   var followersIds = data.ids;
@@ -59,7 +59,6 @@ function tweetEvent (eventMsg) {
    } 
   }).then( response => response.json())
     .then(data=>{
-      console.log(data)
       // Start a reply back to the sender
       var replyText = '@'+from +' '+ data.joke +' '+ data.answer +' '+ "#getajoke";
       T.post('statuses/update', { status: replyText, in_reply_to_status_id: id}, replied);
@@ -73,3 +72,4 @@ function tweetEvent (eventMsg) {
 }
 
 /*Twitch live tweet*/
+
