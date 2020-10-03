@@ -100,7 +100,7 @@ async function getLiveInformationUser(){
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
        console.log("online")
      }
-     else if(!data.data[0]){
+     else if(!data){
       onStreaming = false;
        console.log("offline")
      }
