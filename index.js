@@ -77,7 +77,7 @@ setInterval(getLiveInformationUser, 60000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){
-  var url = 'https://api.twitch.tv/helix/streams?user_login=soiaok';
+  var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
         'client-id' : process.env.CLIENT_ID,
@@ -101,6 +101,7 @@ async function getLiveInformationUser(){
        return
      }
      else if(!data.data[0]){
+      onStreaming = false;
        return
      }
   })
