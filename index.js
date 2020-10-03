@@ -98,11 +98,11 @@ async function getLiveInformationUser(){
         }
       } 
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
-       return
+       console.log("online")
      }
      else if(!data.data[0]){
       onStreaming = false;
-       return
+       console.log("offline")
      }
   })
 }
