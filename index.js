@@ -73,3 +73,36 @@ function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
+setInterval(getLiveInformationUser, 60000)
+var onStreaming = false;
+//check live status user 
+async function getLiveInformationUser(){
+  var url = 'https://api.twitch.tv/helix/streams?user_login=soiaok';
+ return fetch(url, {
+      headers: {
+        'client-id' : process.env.CLIENT_ID,
+        'Authorization' :`Bearer ${process.env.TWITCH_OAUTH_TOKEN}`
+       } 
+      })
+  .then(res => res.json())
+  .then(data => {
+  
+    if(data.data[0] && data.data[0].type === "live" && !onStreaming){
+      console.log(data)
+      var txt = "Hello mon créateur est en live sur #twitch! Venez  https://www.twitch.tv/oyo1505 "; 
+      onStreaming = true;
+      T.post('statuses/update', { status: txt}, replied);
+      function replied(err, data, response){
+      if(err){
+        console.log('ERROR' + err)
+        }
+      } 
+     }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
+       return
+     }
+     else if(!data.data[0]){
+       return
+     }
+  })
+}
+
