@@ -104,6 +104,6 @@ async function getLiveInformationUser(){
       onStreaming = false;
        console.log("offline")
      }
-  })
+  }).catch(err => console.log(err));
 }
 
