@@ -73,7 +73,7 @@ function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 60000)
+setInterval(getLiveInformationUser, 5000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){
@@ -100,7 +100,7 @@ async function getLiveInformationUser(){
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
        console.log("online")
      }
-     else if(!data){
+     else if(!data.data[0]){
       onStreaming = false;
        console.log("offline")
      }
