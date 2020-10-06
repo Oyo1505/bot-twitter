@@ -15,26 +15,35 @@ const T = new Twit({
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
 var usersArray = [500128681, 544902207, 243247158, 861320851, 1008682832120696833];
-setInterval(tweetId, 21600000);
-function tweetId(){
-T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
-  var followersIds = data.ids;
-    T.get('users/show', { id: followersIds[getRandomInt(0,followersIds.length)] },  function (err, data, response) {
-      if(err){
-        tweetId()
-      }else{
-        console.log('Hey I found ' + data.screen_name)
-        var tweet = {status: 'Bonjour @' + data.screen_name +', tu veux une blague  ? 🙂 #bonjour #getajoke '}
-        T.post('statuses/update', tweet, tweeted);
-        function tweeted(err, data, response){
-        if(err){
-          console.log('ERROR' + err)
-          }
-        }
-      }
-    })
-})
+ function tweetId(){
+   T.get('followers/ids', {screen_name: 'bjr_le_monde' }, function(err,data, response){
+    if(err){
+      tweetId()
+    }else{
+      var follerUserAccount =  data.ids;
+      T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
+        var followersIds = data.ids;
+        T.get('users/show', { id: followersIds[getRandomInt(0,followersIds.length)] },  function (err, data, response) {
+           console.log(data, 'ee')
+          if(err || follerUserAccount.includes(data.id)){
+              tweetId()
+            }else{
+              console.log('Hey I found ' + data.screen_name)
+              var tweet = {status: 'Bonjour @' + data.screen_name +', tu veux une blague  ? 🙂 #bonjour #getajoke '}
+              T.post('statuses/update', tweet, tweeted);
+              function tweeted(err, data, response){
+              if(err){
+                console.log('ERROR' + err)
+                }
+              }
+            }
+          })
+      })
+    }
+  });
 }
+
+setInterval(tweetId, 2700000);
 
 /*automated reply*/
 var stream = T.stream('statuses/filter', {track: "bjr_le_monde"});
@@ -89,7 +98,7 @@ async function getLiveInformationUser(){
   
     if(data.data[0] && data.data[0].type === "live" && !onStreaming){
       console.log(data)
-      var txt = "Hello mon créateur est en live sur #twitch! Venez  https://www.twitch.tv/oyo1505 "; 
+      var txt = "Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 "; 
       onStreaming = true;
       T.post('statuses/update', { status: txt}, replied);
       function replied(err, data, response){
@@ -102,7 +111,7 @@ async function getLiveInformationUser(){
      }
      else if(!data.data[0]){
       onStreaming = false;
-       console.log("offline")
+       return;
      }
   }).catch(err => console.log(err));
 }
