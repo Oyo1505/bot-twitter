@@ -14,7 +14,7 @@ const T = new Twit({
   return Math.floor(Math.random() * (max - min +1)) + min;
 }
 var usersArray = [500128681, 544902207, 243247158, 861320851, 1008682832120696833];
-setInterval(tweetId, 1800000);
+setInterval(tweetId, 10800000);
 function tweetId(){
 T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  function (err, data, response) {
   var followersIds = data.ids;
@@ -35,10 +35,14 @@ T.get('followers/ids', { id: usersArray[getRandomInt(0,usersArray.length)] },  f
 })
 }
 /*automated reply*/
-/*var stream = T.stream('statuses/filter', { track: '@bjr_le_monde'});
+var stream = T.stream('statuses/filter', { track: 'bjr_le_monde'});
 
 stream.on('tweet', function (twit) {
-var reply = {
+  var from = twit.str_id;
+ if( replyTo  === "bjr_le_monde"){
+   var text= 'test';
+ }
+ var reply = {
   status: 'Je ne suis pas un humain voit direct avec mon créateur @Oyo1505',
   in_reply_to_status_id:twit.str_id,
   auto_populate_reply_metadata: true
@@ -50,4 +54,4 @@ T.post('statuses/update', reply, replied);
     console.log('ERROR' + err)
     }
   }    
-})*/
+})
