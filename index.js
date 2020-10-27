@@ -50,6 +50,13 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
   }).then( response => response.json())
     .then(data=>data);
 }
+
+ function getGif(){
+ return fetch (`https://api.giphy.com/v1/gifs/random?api_key=${process.env.API_KEY_GLIPHY}=7sn3n6EHY1QQSpbCDs7Jbf2H7Iw8IJYZ&tag=cat&rating=g`)
+                .then(res => res.json())
+                .then(data => console.log(data));
+}
+getGif()
 //24h = 86400000
 setInterval(tweetId, 86400000);
 
