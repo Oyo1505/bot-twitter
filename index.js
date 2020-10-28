@@ -51,12 +51,11 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
     .then(data=>data);
 }
 
- function getGif(){
- return fetch (`https://api.giphy.com/v1/gifs/random?api_key=${process.env.API_KEY_GLIPHY}=7sn3n6EHY1QQSpbCDs7Jbf2H7Iw8IJYZ&tag=cat&rating=g`)
+ async function getGif(){
+ return await fetch (`https://api.giphy.com/v1/gifs/random?api_key=${process.env.API_KEY_GLIPHY}&tag=cat&rating=g`)
                 .then(res => res.json())
-                .then(data => console.log(data));
+                .then(data => data);
 }
-getGif()
 //24h = 86400000
 setInterval(tweetId, 86400000);
 
@@ -92,6 +91,8 @@ setInterval(getLiveInformationUser, 60000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){
+  var gif = await getGif();
+  console.log(gif.data.image_original_url)
   var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
@@ -101,9 +102,9 @@ async function getLiveInformationUser(){
       })
   .then(res => res.json())
   .then(data => {
-  
+
     if(data.data[0] && data.data[0].type === "live" && !onStreaming){
-      var txt = "Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 "; 
+      var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505  ${gif.data.image_original_url}`; 
       onStreaming = true;
       T.post('statuses/update', { status: txt}, replied);
       function replied(err, data, response){
