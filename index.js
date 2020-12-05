@@ -50,7 +50,8 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
   }).then( response => response.json())
     .then(data=>data);
 }
-//24h = 86400000
+//24h = 86400000  
+/*22222
 setInterval(tweetId, 86400000);
 
 /*automated reply*/
