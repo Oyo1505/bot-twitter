@@ -51,13 +51,13 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
     .then(data=>data);
 }
 //24h = 86400000  
-/*22222
+
 setInterval(tweetId, 86400000);
 
 /*automated reply*/
 var stream = T.stream('statuses/filter', {track: "bjr_le_monde"});
 
-stream.on('tweet', tweetEvent)
+//stream.on('tweet', tweetEvent)
 
 async function tweetEvent (eventMsg) {
   var replyTo = eventMsg.in_reply_to_screen_name; 
