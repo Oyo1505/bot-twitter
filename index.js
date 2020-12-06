@@ -74,7 +74,7 @@ async function tweetEvent (eventMsg) {
       T.post('statuses/update', { status: replyText, in_reply_to_status_id: id}, replied);
       function replied(err, data, response){
       if(err){
-        console.log('ERROR' + err)
+        console.log('ERROR' + err);
         }
       } 
   }
@@ -82,7 +82,7 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 60000)
+setInterval(getLiveInformationUser, 5000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){
