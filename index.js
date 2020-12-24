@@ -1,6 +1,11 @@
 const Twit = require('twit');
 const fetch = require('node-fetch');
+<<<<<<< HEAD
 const fs = require('fs'); 
+=======
+const fs = require("fs")
+var path = require('path');
+>>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
 require('dotenv').config();
 
 const T = new Twit({
@@ -63,7 +68,7 @@ setInterval(tweetId, 86400000);
 /*automated reply*/
 var stream = T.stream('statuses/filter', {track: "bjr_le_monde"});
 
-stream.on('tweet', tweetEvent)
+//stream.on('tweet', tweetEvent)
 
 async function tweetEvent (eventMsg) {
   var replyTo = eventMsg.in_reply_to_screen_name; 
@@ -87,12 +92,17 @@ async function tweetEvent (eventMsg) {
 }
 
 /*Twitch live tweet*/
+<<<<<<< HEAD
 
 setInterval(postGif, 10000)
+=======
+setInterval(getLiveInformationUser, 10000)
+>>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){  
   var gif = await getGif();
+<<<<<<< HEAD
   var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
@@ -162,3 +172,64 @@ async function getLiveInformationUser(){
     }
   })
 }
+=======
+ 
+    var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
+  return fetch(url, {
+        headers: {
+          'client-id' : process.env.CLIENT_ID,
+          'Authorization' :`Bearer ${process.env.TWITCH_OAUTH_TOKEN}`
+        } 
+        })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      if(data.data[0] && data.data[0].type === "live" && !onStreaming){
+        var img = fs.readFileSync(gif.data.url, { encoding: 'base64' });
+        var params = { encoding: 'base64' };
+        onStreaming = true;
+        
+                  T.post("media/upload",{ media_data: img }, function (err, data, response) {
+                    console.log( data.media_id_string);  
+                    var mediaIdStr = gif.data.id;
+                      var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+                      var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+                      T.post( 'media/metadata/create',meta_params,
+                        function(err3, data3, response3) {
+                          var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `; 
+                          var params = { status: txt, media_ids: [mediaIdStr] }
+                          T.post("statuses/update", params, function(
+                            err,
+                            data4,
+                            response
+                          ) {
+                            if (err) console.log("Something Went wrong", err.message);
+                            if (data4.errors) {
+                              console.log(
+                                "ERROR On Success : ",
+                                data4.errors[0].message
+                              );
+                            } else {
+                              console('Success')
+                             
+                            }
+                          });
+                        }
+                      );
+                    }
+                  );
+        /*T.post('statuses/update', { status: txt}, replied);
+        function replied(err, data, response){
+        if(err){
+            console.log('ERROR' + err)
+            }
+        } */
+        }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
+          console.log("online")
+        }else if(!data.data[0]){
+          onStreaming = false;
+          return;
+        }
+    }).catch(err => console.log(err));
+}
+>>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
