@@ -1,5 +1,6 @@
 const Twit = require('twit');
 const fetch = require('node-fetch');
+const fs = require('fs'); 
 require('dotenv').config();
 
 const T = new Twit({
@@ -87,12 +88,11 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 60000)
+setInterval(postGif, 10000)
 var onStreaming = false;
 //check live status user 
-async function getLiveInformationUser(){
+async function getLiveInformationUser(){  
   var gif = await getGif();
-  console.log(gif.data.image_original_url)
   var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
@@ -102,16 +102,37 @@ async function getLiveInformationUser(){
       })
   .then(res => res.json())
   .then(data => {
-
-    if(data.data[0] && data.data[0].type === "live" && !onStreaming){
-      var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505  ${gif.data.image_original_url}`; 
+    
+   // var b64content = fs.readFileSync('/path/to/img', { encoding: 'base64' })
+   T.post('media/upload', { media_data: gif }, function (err, data, response) {
+      // now we can assign alt text to the media, for use by screen readers and
+      // other text-based presentations and interpreters
+      console.log(data)
+      var mediaIdStr = data.media_id_string
+      var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+      var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+    var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+        if(err){
+          console.log('ERROR' + err)
+          }
+        var mediaIdStr = gif.data.id;
+        var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+        var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+        T.post('media/metadata/create', meta_params, function (err, data, response) {
+          if (!err) {
+            // now we can reference the media and post a tweet (media will attach to the tweet)
+            var params = { status: 'loving life #nofilter', media_ids: [mediaIdStr] }
+       
+            T.post('statuses/update', params, function (err, data, response) {
+              console.log(data)
+            })
+          }
+        })
+     })
+    if(!onStreaming){
+       
       onStreaming = true;
-      T.post('statuses/update', { status: txt}, replied);
-      function replied(err, data, response){
-      if(err){
-        console.log('ERROR' + err)
-        }
-      } 
+      
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
        console.log("online")
      }
@@ -122,3 +143,22 @@ async function getLiveInformationUser(){
   }).catch(err => console.log(err));
 }
 
+ async function postGif(){
+  var gif = await getGif();
+  var mediaIdStr = gif.data.id
+  console.log(gif.data)
+  var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+  var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+  T.post('media/metadata/create', meta_params, function (err, data, response) {
+    if (!err) {
+      // now we can reference the media and post a tweet (media will attach to the tweet)
+      var params = { status: 'loving life #nofilter', media_ids: [mediaIdStr] }
+      console.log(gif.data.id)
+      T.post('statuses/update', params, function (err, data, response) {
+        console.log(data)
+      })
+    }else{
+      console.log(err)
+    }
+  })
+}
