@@ -1,11 +1,6 @@
 const Twit = require('twit');
 const fetch = require('node-fetch');
-<<<<<<< HEAD
 const fs = require('fs'); 
-=======
-const fs = require("fs")
-var path = require('path');
->>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
 require('dotenv').config();
 
 const T = new Twit({
@@ -62,6 +57,117 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
                 .then(res => res.json())
                 .then(data => data);
 }
+/*var mediaData  = fs.readFileSync('img/cry.gif');
+function uploadImage(){
+  
+  T.post('media/upload', { media: mediaData , media_type : "image/gif"  }, function (err, data, response) {
+    // now we can assign alt text to the media, for use by screen readers and
+    // other text-based presentations and interpreters
+    console.log(data)
+    var mediaIdStr = data.media_id_string
+    var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+    var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+    var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+      if(err){
+        console.log('ERROR ' + err)
+        }
+      T.post('media/metadata/create', meta_params, function (err, data, response) {
+        if (!err) {
+          // now we can reference the media and post a tweet (media will attach to the tweet)
+          var params = { status: txt, media_ids: [mediaIdStr] }
+     
+          T.post('statuses/update', params, function (err, data, response) {
+            console.log(data)
+          })
+        }
+      })
+   })
+}
+*/
+//setInterval(uploadImage, 5000);
+const pathToFile = "img/giphy.gif"
+const mediaType = "image/gif"
+
+const mediaData = fs.readFileSync(pathToFile)
+const mediaSize = fs.statSync(pathToFile).size
+
+initializeMediaUpload()
+  .then(appendFileChunk)
+  .then(finalizeUpload)
+  .then(publishStatusUpdate)
+
+function initializeMediaUpload() {
+ 
+  return new Promise(function(resolve, reject) {
+    T.post("media/upload", {
+      command: "INIT",
+      total_bytes: mediaSize,
+      media_type: mediaType
+    }, function(error, data, response) {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {
+        console.log("init", data)
+        resolve(data.media_id_string)
+      }
+    })
+  })
+}
+
+function appendFileChunk(mediaId) {
+  return new Promise(function(resolve, reject) {
+    T.post("media/upload", {
+      command: "APPEND",
+      media_id: mediaId,
+      media: mediaData,
+      segment_index: 0
+    }, function(error, data, response) {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {
+        console.log("append")
+        resolve(mediaId)
+      }
+    })
+  })
+}
+
+function finalizeUpload(mediaId) {
+  return new Promise(function(resolve, reject) {
+    T.post("media/upload", {
+      command: "FINALIZE",
+      media_id: mediaId
+    }, function(error, data, response) {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {
+        console.log("finalize")
+        resolve(mediaId)
+      }
+    })
+  })
+}
+
+function publishStatusUpdate(mediaId) {
+  
+  return new Promise(function(resolve, reject) {
+    T.post("statuses/update", {
+      status: "I tweeted from Node.js!",
+      media_ids: mediaId
+    }, function(error, data, response) {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {
+        console.log("Successfully uploaded media and tweeted!")
+        resolve(data)
+      }
+    })
+  })
+}
 //24h = 86400000
 setInterval(tweetId, 86400000);
 
@@ -92,17 +198,12 @@ async function tweetEvent (eventMsg) {
 }
 
 /*Twitch live tweet*/
-<<<<<<< HEAD
 
-setInterval(postGif, 10000)
-=======
-setInterval(getLiveInformationUser, 10000)
->>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
+//setInterval(postGif, 10000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){  
   var gif = await getGif();
-<<<<<<< HEAD
   var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
@@ -172,64 +273,3 @@ async function getLiveInformationUser(){
     }
   })
 }
-=======
- 
-    var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
-  return fetch(url, {
-        headers: {
-          'client-id' : process.env.CLIENT_ID,
-          'Authorization' :`Bearer ${process.env.TWITCH_OAUTH_TOKEN}`
-        } 
-        })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      if(data.data[0] && data.data[0].type === "live" && !onStreaming){
-        var img = fs.readFileSync(gif.data.url, { encoding: 'base64' });
-        var params = { encoding: 'base64' };
-        onStreaming = true;
-        
-                  T.post("media/upload",{ media_data: img }, function (err, data, response) {
-                    console.log( data.media_id_string);  
-                    var mediaIdStr = gif.data.id;
-                      var altText = "Small flowers in a planter on a sunny balcony, blossoming."
-                      var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-                      T.post( 'media/metadata/create',meta_params,
-                        function(err3, data3, response3) {
-                          var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `; 
-                          var params = { status: txt, media_ids: [mediaIdStr] }
-                          T.post("statuses/update", params, function(
-                            err,
-                            data4,
-                            response
-                          ) {
-                            if (err) console.log("Something Went wrong", err.message);
-                            if (data4.errors) {
-                              console.log(
-                                "ERROR On Success : ",
-                                data4.errors[0].message
-                              );
-                            } else {
-                              console('Success')
-                             
-                            }
-                          });
-                        }
-                      );
-                    }
-                  );
-        /*T.post('statuses/update', { status: txt}, replied);
-        function replied(err, data, response){
-        if(err){
-            console.log('ERROR' + err)
-            }
-        } */
-        }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
-          console.log("online")
-        }else if(!data.data[0]){
-          onStreaming = false;
-          return;
-        }
-    }).catch(err => console.log(err));
-}
->>>>>>> 559636743245ee6047847137ed4ffa76d2083cb0
