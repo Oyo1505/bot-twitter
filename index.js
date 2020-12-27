@@ -57,13 +57,12 @@ var usersArray = [500128681, 544902207, 243247158, 861320851, 100868283212069683
                 .then(res => res.json())
                 .then(data => data);
 }
-/*var mediaData  = fs.readFileSync('img/cry.gif');
+
 function uploadImage(){
-  
-  T.post('media/upload', { media: mediaData , media_type : "image/gif"  }, function (err, data, response) {
+  T.post('media/upload', { media: mediaData }, function (err, data, response) {
     // now we can assign alt text to the media, for use by screen readers and
     // other text-based presentations and interpreters
-    console.log(data)
+   
     var mediaIdStr = data.media_id_string
     var altText = "Small flowers in a planter on a sunny balcony, blossoming."
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
@@ -77,97 +76,14 @@ function uploadImage(){
           var params = { status: txt, media_ids: [mediaIdStr] }
      
           T.post('statuses/update', params, function (err, data, response) {
-            console.log(data)
+            console.log(data);
           })
         }
       })
    })
 }
-*/
-//setInterval(uploadImage, 5000);
-const pathToFile = "img/giphy.gif"
-const mediaType = "image/gif"
 
-const mediaData = fs.readFileSync(pathToFile)
-const mediaSize = fs.statSync(pathToFile).size
 
-initializeMediaUpload()
-  .then(appendFileChunk)
-  .then(finalizeUpload)
-  .then(publishStatusUpdate)
-
-function initializeMediaUpload() {
- 
-  return new Promise(function(resolve, reject) {
-    T.post("media/upload", {
-      command: "INIT",
-      total_bytes: mediaSize,
-      media_type: mediaType
-    }, function(error, data, response) {
-      if (error) {
-        console.log(error)
-        reject(error)
-      } else {
-        console.log("init", data)
-        resolve(data.media_id_string)
-      }
-    })
-  })
-}
-
-function appendFileChunk(mediaId) {
-  return new Promise(function(resolve, reject) {
-    T.post("media/upload", {
-      command: "APPEND",
-      media_id: mediaId,
-      media: mediaData,
-      segment_index: 0
-    }, function(error, data, response) {
-      if (error) {
-        console.log(error)
-        reject(error)
-      } else {
-        console.log("append")
-        resolve(mediaId)
-      }
-    })
-  })
-}
-
-function finalizeUpload(mediaId) {
-  return new Promise(function(resolve, reject) {
-    T.post("media/upload", {
-      command: "FINALIZE",
-      media_id: mediaId
-    }, function(error, data, response) {
-      if (error) {
-        console.log(error)
-        reject(error)
-      } else {
-        console.log("finalize")
-        resolve(mediaId)
-      }
-    })
-  })
-}
-
-function publishStatusUpdate(mediaId) {
-  
-  return new Promise(function(resolve, reject) {
-    T.post("statuses/update", {
-      status: "I tweeted from Node.js!",
-      media_ids: mediaId
-    }, function(error, data, response) {
-      if (error) {
-        console.log(error)
-        reject(error)
-      } else {
-        console.log("Successfully uploaded media and tweeted!")
-        resolve(data)
-      }
-    })
-  })
-}
 //24h = 86400000
 setInterval(tweetId, 86400000);
 
@@ -199,7 +115,6 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-//setInterval(postGif, 10000)
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){  
@@ -214,34 +129,8 @@ async function getLiveInformationUser(){
   .then(res => res.json())
   .then(data => {
     
-   // var b64content = fs.readFileSync('/path/to/img', { encoding: 'base64' })
-   T.post('media/upload', { media_data: gif }, function (err, data, response) {
-      // now we can assign alt text to the media, for use by screen readers and
-      // other text-based presentations and interpreters
-      console.log(data)
-      var mediaIdStr = data.media_id_string
-      var altText = "Small flowers in a planter on a sunny balcony, blossoming."
-      var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-    var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
-        if(err){
-          console.log('ERROR' + err)
-          }
-        var mediaIdStr = gif.data.id;
-        var altText = "Small flowers in a planter on a sunny balcony, blossoming."
-        var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-        T.post('media/metadata/create', meta_params, function (err, data, response) {
-          if (!err) {
-            // now we can reference the media and post a tweet (media will attach to the tweet)
-            var params = { status: 'loving life #nofilter', media_ids: [mediaIdStr] }
-       
-            T.post('statuses/update', params, function (err, data, response) {
-              console.log(data)
-            })
-          }
-        })
-     })
-    if(!onStreaming){
-       
+    if(data.data[0] && data.data[0].type === "live" && !onStreaming){
+      postGif();
       onStreaming = true;
       
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
@@ -254,22 +143,30 @@ async function getLiveInformationUser(){
   }).catch(err => console.log(err));
 }
 
- async function postGif(){
-  var gif = await getGif();
-  var mediaIdStr = gif.data.id
-  console.log(gif.data)
-  var altText = "Small flowers in a planter on a sunny balcony, blossoming."
-  var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-  T.post('media/metadata/create', meta_params, function (err, data, response) {
-    if (!err) {
-      // now we can reference the media and post a tweet (media will attach to the tweet)
-      var params = { status: 'loving life #nofilter', media_ids: [mediaIdStr] }
-      console.log(gif.data.id)
-      T.post('statuses/update', params, function (err, data, response) {
-        console.log(data)
+  function postGif(){
+  //var gif = await getGif();
+  const pathToFile = "img/giphy.gif";
+  const mediaType = "image/gif";
+  var randomInt = getRandomInt(1, 6);
+  T.postMediaChunked({ file_path: `img/${randomInt}.gif`  }, function (err, data, response) {
+    
+    var mediaIdStr = data.media_id_string
+    var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+    var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+    var txt = `Hello mon créateur est en live sur #twitch ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+    
+      if(err){
+        console.log('ERROR ' + err)
+        }
+      T.post('media/metadata/create', meta_params, function (err, data, response) {
+        if (!err) {
+          // now we can reference the media and post a tweet (media will attach to the tweet)
+          var params = { status: txt, media_ids: [mediaIdStr] }
+     
+          T.post('statuses/update', params, function (err, data, response) {
+            console.log(data);
+          })
+        }
       })
-    }else{
-      console.log(err)
-    }
   })
 }
