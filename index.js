@@ -115,11 +115,11 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 5000)
+setInterval(getLiveInformationUser, 60000)
+
 var onStreaming = false;
 //check live status user 
 async function getLiveInformationUser(){  
-  var gif = await getGif();
   var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
@@ -129,13 +129,13 @@ async function getLiveInformationUser(){
       })
   .then(res => res.json())
   .then(data => {
-    
+    console.log(data.data[0].type, onStreaming)
     if(data.data[0] && data.data[0].type === "live" && !onStreaming){
-      postGif();
+      let game = data.data[0].game_name;
+      postGif(game);
       onStreaming = true;
-      
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
-       console.log("online")
+       console.log("online");
      }
      else if(!data.data[0]){
       onStreaming = false;
@@ -143,26 +143,29 @@ async function getLiveInformationUser(){
      }
   }).catch(err => console.log(err));
 }
-
-  function postGif(){
-  //var gif = await getGif();
-  const pathToFile = "img/giphy.gif";
-  const mediaType = "image/gif";
-  var randomInt = getRandomInt(1, 6);
+  function postGif(gameName){
+  var randomInt = getRandomInt(1, 13);
   T.postMediaChunked({ file_path: `img/${randomInt}.gif`  }, function (err, data, response) {
     
-    var mediaIdStr = data.media_id_string
-    var altText = "Small flowers in a planter on a sunny balcony, blossoming."
-    var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-    var txt = `Hello mon créateur est en live sur #twitch ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+    var mediaIdStr = data.media_id_string;
+    var altText = "Small flowers in a planter on a sunny balcony, blossoming.";
+    var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } };
+    var sentences = [
+      `Hello mon créateur  est en live sur #twitch sur ${gameName} !   https://www.twitch.tv/oyo1505 `,
+      `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
+      `En live sur ${gameName} !  https://www.twitch.tv/oyo1505 `,
+      `Je lance le live et on ce fait du  ${gameName} !   https://www.twitch.tv/oyo1505 `,
+    ]
+    var randomSentence =  getRandomInt(0, sentences.length);
+    //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
     
       if(err){
-        console.log('ERROR ' + err)
+        console.log('ERROR ' + err);
         }
       T.post('media/metadata/create', meta_params, function (err, data, response) {
         if (!err) {
           // now we can reference the media and post a tweet (media will attach to the tweet)
-          var params = { status: txt, media_ids: [mediaIdStr] }
+          var params = { status: sentences[randomSentence], media_ids: [mediaIdStr] };
      
           T.post('statuses/update', params, function (err, data, response) {
             console.log(data);
