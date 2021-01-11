@@ -115,12 +115,12 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 60000)
+setInterval(getLiveInformationUser, 5000)
 
 var onStreaming = false;
-//check live status user 
+//check user status  on live  
 async function getLiveInformationUser(){  
-  var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
+  var url = 'https://api.twitch.tv/helix/streams?user_login=soiaok';
  return fetch(url, {
       headers: {
         'client-id' : process.env.CLIENT_ID,
@@ -129,7 +129,7 @@ async function getLiveInformationUser(){
       })
   .then(res => res.json())
   .then(data => {
-    console.log(data.data[0].type, onStreaming)
+    
     if(data.data[0] && data.data[0].type === "live" && !onStreaming){
       let game = data.data[0].game_name;
       postGif(game);
@@ -137,7 +137,7 @@ async function getLiveInformationUser(){
      }else if(data.data[0] && data.data[0].type === "live" && onStreaming ){
        console.log("online");
      }
-     else if(!data.data[0]){
+     else if(!data.data[0] ){
       onStreaming = false;
        return;
      }
@@ -146,7 +146,6 @@ async function getLiveInformationUser(){
   function postGif(gameName){
   var randomInt = getRandomInt(1, 13);
   T.postMediaChunked({ file_path: `img/${randomInt}.gif`  }, function (err, data, response) {
-    
     var mediaIdStr = data.media_id_string;
     var altText = "Small flowers in a planter on a sunny balcony, blossoming.";
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } };
@@ -155,10 +154,10 @@ async function getLiveInformationUser(){
       `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
       `En live sur ${gameName} !  https://www.twitch.tv/oyo1505 `,
       `Je lance le live et on ce fait du  ${gameName} !   https://www.twitch.tv/oyo1505 `,
-    ]
-    var randomSentence =  getRandomInt(0, sentences.length);
+    ];
+    var randomSentence =  getRandomInt(0, sentences.length-1);
     //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
-    
+    console.log(sentences[randomSentence]);
       if(err){
         console.log('ERROR ' + err);
         }
@@ -169,8 +168,8 @@ async function getLiveInformationUser(){
      
           T.post('statuses/update', params, function (err, data, response) {
             console.log(data);
-          })
-        }
-      })
-  })
-}
+          });
+        };
+      });
+  });
+};
