@@ -120,7 +120,7 @@ setInterval(getLiveInformationUser, 5000)
 var onStreaming = false;
 //check user status  on live  
 async function getLiveInformationUser(){  
-  var url = 'https://api.twitch.tv/helix/streams?user_login=soiaok';
+  var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
  return fetch(url, {
       headers: {
         'client-id' : process.env.CLIENT_ID,
@@ -153,7 +153,8 @@ async function getLiveInformationUser(){
       `Hello mon créateur  est en live sur #twitch sur ${gameName} !   https://www.twitch.tv/oyo1505 `,
       `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
       `En live sur ${gameName} !  https://www.twitch.tv/oyo1505 `,
-      `Je lance le live et on ce fait du  ${gameName} !   https://www.twitch.tv/oyo1505 `,
+      `Je lance le live et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
+      `Hey l'équipe je lance un live sur ${gameName} !   https://www.twitch.tv/oyo1505 `,
     ];
     var randomSentence =  getRandomInt(0, sentences.length-1);
     //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
