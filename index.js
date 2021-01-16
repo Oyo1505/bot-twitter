@@ -115,7 +115,7 @@ async function tweetEvent (eventMsg) {
 
 /*Twitch live tweet*/
 
-setInterval(getLiveInformationUser, 5000)
+setInterval(getLiveInformationUser, 60000)
 
 var onStreaming = false;
 //check user status  on live  
