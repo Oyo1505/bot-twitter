@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const fs = require('fs'); 
 require('dotenv').config();
 
+
 const T = new Twit({
   consumer_key: process.env.API_KEY,
   consumer_secret: process.env.API_KEY_SECRET,
@@ -149,12 +150,13 @@ async function getLiveInformationUser(){
     var mediaIdStr = data.media_id_string;
     var altText = "Small flowers in a planter on a sunny balcony, blossoming.";
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } };
+    let regexGameName = gameName.replace(/\s/g, '');
     var sentences = [
-      `Hello mon créateur  est en live sur #twitch sur ${gameName} !   https://www.twitch.tv/oyo1505 `,
-      `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
-      `En live sur ${gameName} !  https://www.twitch.tv/oyo1505 `,
-      `Je lance le live et on ce fait du ${gameName} !   https://www.twitch.tv/oyo1505 `,
-      `Hey l'équipe je lance un live sur ${gameName} !   https://www.twitch.tv/oyo1505 `,
+      `Hello mon créateur  est en live sur #twitch sur ${gameName} ! #${regexGameName}   https://www.twitch.tv/oyo1505 `,
+      `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
+      `En live sur ${gameName} ! #${regexGameName} https://www.twitch.tv/oyo1505 `,
+      `Je lance le live et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
+      `Hey l'équipe je lance un live sur ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
     ];
     var randomSentence =  getRandomInt(0, sentences.length-1);
     //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
