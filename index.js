@@ -67,7 +67,7 @@ function uploadImage(){
     var mediaIdStr = data.media_id_string
     var altText = "Small flowers in a planter on a sunny balcony, blossoming."
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-    var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+    var txt = `Hello mon créateur est en live sur #twitch! Follow me ! :)  https://www.twitch.tv/0y0_live `;
       if(err){
         console.log('ERROR ' + err)
         }
@@ -121,7 +121,7 @@ setInterval(getLiveInformationUser, 60000)
 var onStreaming = false;
 //check user status  on live  
 async function getLiveInformationUser(){  
-  var url = 'https://api.twitch.tv/helix/streams?user_login=oyo1505';
+  var url = 'https://api.twitch.tv/helix/streams?user_login=0y0_live';
  return fetch(url, {
       headers: {
         'client-id' : process.env.CLIENT_ID,
@@ -152,14 +152,14 @@ async function getLiveInformationUser(){
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } };
     let regexGameName = gameName.replace(/\s/g, '');
     var sentences = [
-      `Hello mon créateur  est en live sur #twitch sur ${gameName} ! #${regexGameName}   https://www.twitch.tv/oyo1505 `,
-      `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
-      `En live sur ${gameName} ! #${regexGameName} https://www.twitch.tv/oyo1505 `,
-      `Je lance le live et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
-      `Hey l'équipe je lance un live sur ${gameName} ! #${regexGameName}  https://www.twitch.tv/oyo1505 `,
+      `Hello mon créateur  est en live sur #twitch sur ${gameName} ! #${regexGameName}   https://www.twitch.tv/0y0_live `,
+      `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/0y0_live `,
+      `En live sur ${gameName} ! #${regexGameName} https://www.twitch.tv/0y0_live `,
+      `Je lance le live et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/0y0_live `,
+      `Hey l'équipe je lance un live sur ${gameName} ! #${regexGameName}  https://www.twitch.tv/0y0_live `,
     ];
     var randomSentence =  getRandomInt(0, sentences.length-1);
-    //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/oyo1505 `;
+    //var txt = `Hello mon créateur est en live sur #twitch sur ${gameName} ! Follow me ! :)  https://www.twitch.tv/0y0_live `;
     console.log(sentences[randomSentence]);
       if(err){
         console.log('ERROR ' + err);
