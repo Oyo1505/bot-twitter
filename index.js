@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const fs = require('fs'); 
 require('dotenv').config();
 
-
 const T = new Twit({
   consumer_key: process.env.API_KEY,
   consumer_secret: process.env.API_KEY_SECRET,
@@ -150,7 +149,7 @@ async function getLiveInformationUser(){
     var mediaIdStr = data.media_id_string;
     var altText = "Small flowers in a planter on a sunny balcony, blossoming.";
     var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } };
-    let regexGameName = gameName.replace(/\s/g, '');
+    let regexGameName = gameName.replace(/[\s\W_]/g, '');
     var sentences = [
       `Hello mon créateur  est en live sur #twitch sur ${gameName} ! #${regexGameName}   https://www.twitch.tv/0y0_live `,
       `Salut les gars je suis en live sur Twitch et on ce fait du ${gameName} ! #${regexGameName}  https://www.twitch.tv/0y0_live `,
